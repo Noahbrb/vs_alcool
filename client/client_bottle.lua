@@ -13,6 +13,8 @@ local hashWhiskeyBottle = GetHashKey(whiskeyBottle)
     créer la commande pour récupérer une bouteille pleine
 ]]
 RegisterCommand('bottle', function (source, args, rawCommand)
+    ClearPedTasks(playerId)
+    ClearArea(GetEntityCoords(playerId), 0.1, true, false, false, false)
     playerPos = {
         x= GetEntityCoords(playerId).x,
         y= GetEntityCoords(playerId).y,
@@ -72,6 +74,11 @@ function playerActionWithBottle()
                 items.bottle_alcohol.onGround = false
                 playerHasBottle = false
                 print(playerHasBottle)
+
+                items.bottle_alcohol = {
+                    contain = 8,
+                    onGround = false
+                }
                 
             end
 
@@ -112,28 +119,32 @@ function playerActionWithBottle()
             end)
 
             Citizen.CreateThread(function ()
-                while playerHasBottle == true and items.bottle_alcohol.onGround == false do
+                if playerHasBottle == true and items.bottle_alcohol.onGround == false then
                     local playerCoords = GetEntityCoords(PlayerPedId())
                     local closestPlayer = nil
                     local minDistance = math.huge
             
-                    for _, playerId in ipairs(GetActivePlayers()) do
-                        if playerId ~= PlayerId() then
-                            targetCoords = GetEntityCoords(GetPlayerPed(playerId))
+                    for _, pedID in ipairs(GetActivePlayers()) do
+                        if pedID ~= PlayerId() then
+                            targetCoords = GetEntityCoords(GetPlayerPed(pedID))
                             distance = #(playerCoords - targetCoords)
                         
                             if distance < minDistance then
                                 minDistance = distance
-                                closestPlayer = playerId
+                                closestPlayer = pedID
                             end
                         end
                     end
             
-                    if closestPlayer ~= nil and distance <= 1.5 then
-                        -- give whiskey bottle here
+                    if closestPlayer ~= nil and distance <= 1.5 and IsControlJustPressed(1, 38) then
+                        if items.bottle_alcohol.contain == 0 then
+                            print('La bouteille est vide. Il est impossible de servir cette personne.')
+                        else
+                            local pedServerID = GetPlayerServerId(closestPlayer)
+                            items.bottle_alcohol.contain = items.bottle_alcohol.contain-1
+                            TriggerServerEvent('Serve_Whiskey', pedServerID)
+                        end
                     end
-            
-                    Citizen.Wait(1)
                 end
             end)
 
