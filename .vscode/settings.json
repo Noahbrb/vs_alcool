@@ -1,7 +1,0 @@
-{
-    "Lua.diagnostics.globals": [
-        "items",
-        "PlayerPedId",
-        "whiskeyBottle_spawn"
-    ]
-}

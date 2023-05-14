@@ -1,4 +1,3 @@
----@diagnostic disable: undefined-global
 --[[
     Déclaration des variables 
 ]]
@@ -14,7 +13,6 @@ local hashWhiskeyBottle = GetHashKey(whiskeyBottle)
 ]]
 RegisterCommand('bottle', function (source, args, rawCommand)
     ClearPedTasks(playerId)
-    ClearArea(GetEntityCoords(playerId), 0.1, true, false, false, false)
     playerPos = {
         x= GetEntityCoords(playerId).x,
         y= GetEntityCoords(playerId).y,
@@ -45,19 +43,13 @@ function playerActionWithBottle()
                 if items.bottle_alcohol.contain == 0 then
                     print('La bouteille est vide')
                 else
-                AttachEntityToEntity(whiskeyBottle_spawn,GetPlayerPed(PlayerId()),GetPedBoneIndex(GetPlayerPed(PlayerId()), 28422),0.01,0.0,-0.18,0.0,0.0,45.0,1,1,0,1,0,1)
-                TaskPlayAnimAdvanced(playerId, 'amb@world_human_drinking@coffee@male@idle_a', 'idle_c', GetEntityCoords(playerId), 0.0, 0.0, GetEntityHeading(playerId), 3.0, 3.0, -1, 50, 0.7, 0, 0)
-                Citizen.Wait(3500)
-                AttachEntityToEntity(whiskeyBottle_spawn,GetPlayerPed(PlayerId()),GetPedBoneIndex(GetPlayerPed(PlayerId()), 28422),0.01,0.0,-0.1,0.0,0.0,45.0,1,1,0,1,0,1)
-                items.bottle_alcohol.contain = items.bottle_alcohol.contain-1
-                print('il vous reste '..items.bottle_alcohol.contain..' gorgées')
-
-                if items.bottle_alcohol.contain == 0 then
-                    print('La bouteille est vide')
-                    DeleteEntity(whiskeyBottle_spawn)
-                    whiskeyBottle_spawn_empty = CreateObject(GetHashKey('p_whiskey_notop_empty'), playerPos.x, playerPos.y, playerPos.z, true, true, true)
-                    AttachEntityToEntity(whiskeyBottle_spawn_empty,GetPlayerPed(PlayerId()),GetPedBoneIndex(GetPlayerPed(PlayerId()), 28422),0.01,0.0,0.0,0.0,0.0,45.0,1,1,0,1,0,1)
-                end
+                    AttachEntityToEntity(whiskeyBottle_spawn,GetPlayerPed(PlayerId()),GetPedBoneIndex(GetPlayerPed(PlayerId()), 28422),0.01,0.0,-0.18,0.0,0.0,45.0,1,1,0,1,0,1)
+                    TaskPlayAnimAdvanced(playerId, 'amb@world_human_drinking@coffee@male@idle_a', 'idle_c', GetEntityCoords(playerId), 0.0, 0.0, GetEntityHeading(playerId), 3.0, 3.0, -1, 50, 0.7, 0, 0)
+                    Citizen.Wait(3500)
+                    AttachEntityToEntity(whiskeyBottle_spawn,GetPlayerPed(PlayerId()),GetPedBoneIndex(GetPlayerPed(PlayerId()), 28422),0.01,0.0,-0.1,0.0,0.0,45.0,1,1,0,1,0,1)
+                    items.bottle_alcohol.contain = items.bottle_alcohol.contain-1
+                    print('il vous reste '..items.bottle_alcohol.contain..' gorgées')
+                    isBottleEmpty()
                 end 
             end
 
@@ -141,7 +133,10 @@ function playerActionWithBottle()
                             print('La bouteille est vide. Il est impossible de servir cette personne.')
                         else
                             local pedServerID = GetPlayerServerId(closestPlayer)
+                            print(pedServerID)
                             items.bottle_alcohol.contain = items.bottle_alcohol.contain-1
+                            print('il vous reste '..items.bottle_alcohol.contain..' gorgées')
+                            isBottleEmpty()
                             TriggerServerEvent('Serve_Whiskey', pedServerID)
                         end
                     end
@@ -152,15 +147,3 @@ function playerActionWithBottle()
         end
     end)
 end
-
-
-
-
-
-RegisterCommand('an', function (source, args, rawCommand)
-    ClearPedTasks(playerId)
-    DeleteEntity(whiskeyBottle_spawn)
-    playerHasBottle = false
-    print(playerHasBottle)
-end, false)
-
