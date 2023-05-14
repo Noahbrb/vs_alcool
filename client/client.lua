@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 --[[
     Déclaration des variables 
 ]]
@@ -22,15 +23,27 @@ RegisterCommand('bottle', function (source, args, rawCommand)
     print(playerHasBottle)
 
     
-    RequestAnimDict('amb@world_human_drinking@beer@male@idle_a')
-    while not HasAnimDictLoaded('amb@world_human_drinking@beer@male@idle_a') do
+    RequestAnimDict('amb@world_human_drinking@coffee@male@idle_a')
+    while not HasAnimDictLoaded('amb@world_human_drinking@coffee@male@idle_a') do
         Wait(100)
     end
-    local whiskeyBottle_spawn = CreateObject(hashWhiskeyBottle, playerPos.x, playerPos.y, playerPos.z, true, true, true)
-    TaskPlayAnim(playerId, 'amb@world_human_drinking@beer@male@idle_a', 'idle_a', 8.0, -8.0, -1, 50, 0, false, false, false)
-
+    whiskeyBottle_spawn = CreateObject(hashWhiskeyBottle, playerPos.x, playerPos.y, playerPos.z, true, true, true)
+    TaskPlayAnim(playerId, 'amb@world_human_drinking@coffee@male@idle_a', 'idle_c', 8.0, -8.0, -1, 50, 0, false, false, false)
+    TaskPlayAnimAdvanced(playerId, 'amb@world_human_drinking@coffee@male@idle_a', 'idle_c', GetEntityCoords(playerId), 0.0, 0.0, playerPos.hdg, 3.0, 3.0, -1, 50, 1.0, 0, 0)
+    
+    
+    
+    AttachEntityToEntity(whiskeyBottle_spawn,GetPlayerPed(PlayerId()),GetPedBoneIndex(GetPlayerPed(PlayerId()), 28422),0.0,0.0,-0.1,0.0,0.0,0.0,1,1,0,1,0,1)
     Wait(3000)
-    DeleteObject(whiskeyBottle_spawn)
+    AttachEntityToEntity(whiskeyBottle_spawn,GetPlayerPed(PlayerId()),GetPedBoneIndex(GetPlayerPed(PlayerId()), 28422),0.0,0.0,-0.2,0.0,0.0,0.0,1,1,0,1,0,1)
+    TaskPlayAnimAdvanced(playerId, 'amb@world_human_drinking@coffee@male@idle_a', 'idle_c', GetEntityCoords(playerId), 0.0, 0.0, playerPos.hdg, 3.0, 3.0, -1, 50, 0.7, 0, 0)
+    Wait(3000)
+    AttachEntityToEntity(whiskeyBottle_spawn,GetPlayerPed(PlayerId()),GetPedBoneIndex(GetPlayerPed(PlayerId()), 28422),0.0,0.0,-0.1,0.0,0.0,0.0,1,1,0,1,0,1)
+end, false)
+
+RegisterCommand('an', function (source, args, rawCommand)
+    ClearPedTasks(playerId)
+    DeleteEntity(whiskeyBottle_spawn)
 end, false)
 
 Citizen.CreateThread(function ()
