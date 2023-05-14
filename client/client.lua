@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 --[[
     Déclaration des variables 
 ]]
@@ -110,10 +111,38 @@ function playerActionWithBottle()
                 end
             end)
 
+            Citizen.CreateThread(function ()
+                while playerHasBottle == true and items.bottle_alcohol.onGround == false do
+                    local playerCoords = GetEntityCoords(PlayerPedId())
+                    local closestPlayer = nil
+                    local minDistance = math.huge
+            
+                    for _, playerId in ipairs(GetActivePlayers()) do
+                        if playerId ~= PlayerId() then
+                            targetCoords = GetEntityCoords(GetPlayerPed(playerId))
+                            distance = #(playerCoords - targetCoords)
+                        
+                            if distance < minDistance then
+                                minDistance = distance
+                                closestPlayer = playerId
+                            end
+                        end
+                    end
+            
+                    if closestPlayer ~= nil and distance <= 1.5 then
+                        -- give whiskey bottle here
+                    end
+            
+                    Citizen.Wait(1)
+                end
+            end)
+
             Citizen.Wait(1)
         end
     end)
 end
+
+
 
 
 
@@ -123,3 +152,4 @@ RegisterCommand('an', function (source, args, rawCommand)
     playerHasBottle = false
     print(playerHasBottle)
 end, false)
+
