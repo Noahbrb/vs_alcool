@@ -7,7 +7,7 @@ local playerHasBottle = false
 local whiskeyBottle = 'prop_whiskey_bottle'
 local hashWhiskeyBottle = GetHashKey(whiskeyBottle)
 local playerDrinkcount = 0 
-local isPlayerDrunk = false
+isPlayerDrunk = false
 currentBottle = nil
 
 
