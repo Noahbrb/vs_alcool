@@ -1,4 +1,5 @@
 RegisterNetEvent('Serve_Whiskey')
-AddEventHandler('Serve_Whiskey', function (pedServerID, playerName)
+AddEventHandler('Serve_Whiskey', function (pedServerID)
+    local playerName = GetPlayerName(source)
     TriggerClientEvent('Serve_Whiskey_SendClient', pedServerID, playerName)
 end)

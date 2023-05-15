@@ -42,9 +42,13 @@ AddEventHandler('Serve_Whiskey_SendClient', function (playerName)
     playerActionWithGlass()
 end, false)
 
+--[[
+Action avec le verre
+]]
 function playerActionWithGlass()
     Citizen.CreateThread(function ()
         while playerHasGlass do
+            ControlHelp("F1 : Boire\nF3 : Jeter le verre")
             --[[
                 Action pour boire dans le verre
             ]]
@@ -66,7 +70,7 @@ function playerActionWithGlass()
                 ClearPedTasks(playerId)
                 DeleteEntity(whiskeyGlass_spawn)
                 playerHasGlass = false
-                ShowAboveRadarMessage('~b~Vous avez jeter votre verre !')
+                ShowAboveRadarMessage('~b~Vous avez jeté votre verre !')
 
                 items.glass_alcohol.contain = 1
             end
