@@ -12,7 +12,7 @@ local hashWhiskeyGlass = GetHashKey(whiskeyGlass)
     créer l'event pour récupérer le verre
 ]]
 RegisterNetEvent('Serve_Whiskey_SendClient')
-AddEventHandler('Serve_Whiskey_SendClient', function ()
+AddEventHandler('Serve_Whiskey_SendClient', function (playerName)
 
     --Reset des parametres
     playerHasGlass = false
@@ -20,7 +20,6 @@ AddEventHandler('Serve_Whiskey_SendClient', function ()
     ClearPedTasks(playerId)
     DeleteEntity(whiskeyGlass_spawn)
     items.glass_alcohol.contain = 1
-    print(items.glass_alcohol.contain)
     --
 
     playerPos = {
@@ -30,7 +29,7 @@ AddEventHandler('Serve_Whiskey_SendClient', function ()
         hdg=GetEntityHeading(playerId),
     }
     playerHasGlass = true
-    print(playerHasGlass)
+    ShowAboveRadarMessage('~b~'..playerName..' est entrain de vous servir')
 
     
     RequestAnimDict('amb@world_human_drinking@coffee@male@idle_a')
@@ -51,13 +50,12 @@ function playerActionWithGlass()
             ]]
             if IsControlJustPressed(1, 288) then
                 if items.glass_alcohol.contain == 0 then
-                    print('Le verre est vide')
+                    ShowAboveRadarMessage('~r~Le verre est vide')
                 else
                 
                     TaskPlayAnimAdvanced(playerId, 'amb@world_human_drinking@coffee@male@idle_a', 'idle_c', GetEntityCoords(playerId), 0.0, 0.0, GetEntityHeading(playerId), 3.0, 3.0, -1, 50, 0.7, 0, 0)
                     Citizen.Wait(3500)
                     items.glass_alcohol.contain = items.glass_alcohol.contain-1
-                    print(items.glass_alcohol.contain)
                 end 
             end
 
@@ -68,7 +66,7 @@ function playerActionWithGlass()
                 ClearPedTasks(playerId)
                 DeleteEntity(whiskeyGlass_spawn)
                 playerHasGlass = false
-                print(playerHasGlass)
+                ShowAboveRadarMessage('~b~Vous avez jeter votre verre !')
 
                 items.glass_alcohol.contain = 1
             end

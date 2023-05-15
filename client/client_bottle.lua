@@ -20,7 +20,7 @@ RegisterCommand('bottle', function (source, args, rawCommand)
         hdg=GetEntityHeading(playerId),
     }
     playerHasBottle = true
-    print(playerHasBottle)
+    ShowAboveRadarMessage('~b~Vous avez récupérer une bouteille de whiskey !')
 
     
     RequestAnimDict('amb@world_human_drinking@coffee@male@idle_a')
@@ -41,14 +41,14 @@ function playerActionWithBottle()
             ]]
             if IsControlJustPressed(1, 288) and items.bottle_alcohol.onGround == false then
                 if items.bottle_alcohol.contain == 0 then
-                    print('La bouteille est vide')
+                    ShowAboveRadarMessage('~r~La bouteille est vide')
                 else
                     AttachEntityToEntity(whiskeyBottle_spawn,GetPlayerPed(PlayerId()),GetPedBoneIndex(GetPlayerPed(PlayerId()), 28422),0.01,0.0,-0.18,0.0,0.0,45.0,1,1,0,1,0,1)
                     TaskPlayAnimAdvanced(playerId, 'amb@world_human_drinking@coffee@male@idle_a', 'idle_c', GetEntityCoords(playerId), 0.0, 0.0, GetEntityHeading(playerId), 3.0, 3.0, -1, 50, 0.7, 0, 0)
                     Citizen.Wait(3500)
                     AttachEntityToEntity(whiskeyBottle_spawn,GetPlayerPed(PlayerId()),GetPedBoneIndex(GetPlayerPed(PlayerId()), 28422),0.01,0.0,-0.1,0.0,0.0,45.0,1,1,0,1,0,1)
                     items.bottle_alcohol.contain = items.bottle_alcohol.contain-1
-                    print('il vous reste '..items.bottle_alcohol.contain..' gorgées')
+                    ShowAboveRadarMessage('~g~il vous reste '..items.bottle_alcohol.contain..' gorgées')
                     isBottleEmpty()
                 end 
             end
@@ -65,7 +65,7 @@ function playerActionWithBottle()
                 end
                 items.bottle_alcohol.onGround = false
                 playerHasBottle = false
-                print(playerHasBottle)
+                ShowAboveRadarMessage('~b~Vous avez jeter votre bouteille.')
 
                 items.bottle_alcohol = {
                     contain = 8,
@@ -93,8 +93,12 @@ function playerActionWithBottle()
                 SetEntityRotation(whiskeyBottle_spawn, vector3(0.0, 0.0, 90.0))
                 ClearPedTasks(playerId)
                 items.bottle_alcohol.onGround = true
+                ShowAboveRadarMessage('~b~La bouteille est par terre.')
             end
 
+            --[[
+                Action pour récupérer la bouteille
+            ]]
             Citizen.CreateThread(function ()
                 OnGroundBottleCoords = GetEntityCoords(whiskeyBottle_spawn)
                 if #(OnGroundBottleCoords - GetEntityCoords(playerId)) < 1.5 and IsControlJustPressed(1, 311) and items.bottle_alcohol.onGround == true then
@@ -106,7 +110,8 @@ function playerActionWithBottle()
                     Citizen.Wait(800)
                     AttachEntityToEntity(whiskeyBottle_spawn,GetPlayerPed(PlayerId()),GetPedBoneIndex(GetPlayerPed(PlayerId()), 28422),0.01,0.0,-0.1,0.0,0.0,45.0,1,1,0,1,0,1)
                     TaskPlayAnimAdvanced(playerId, 'amb@world_human_drinking@coffee@male@idle_a', 'idle_c', GetEntityCoords(playerId), 0.0, 0.0, playerPos.hdg, 3.0, 3.0, -1, 50, 1.0, 0, 0)
-                    items.bottle_alcohol.onGround = false                    
+                    items.bottle_alcohol.onGround = false
+                    ShowAboveRadarMessage('~b~Vous avez récupérer la bouteille.')                   
                 end
             end)
 
@@ -130,14 +135,16 @@ function playerActionWithBottle()
             
                     if closestPlayer ~= nil and distance <= 1.5 and IsControlJustPressed(1, 38) then
                         if items.bottle_alcohol.contain == 0 then
-                            print('La bouteille est vide. Il est impossible de servir cette personne.')
+                            ShowAboveRadarMessage('~r~La bouteille est vide. Il est impossible de servir cette personne.')
                         else
                             local pedServerID = GetPlayerServerId(closestPlayer)
-                            print(pedServerID)
+                            local pedServerName = GetPlayerName(closestPlayer)
+                            local playerName = GetPlayerName(playerId)
                             items.bottle_alcohol.contain = items.bottle_alcohol.contain-1
-                            print('il vous reste '..items.bottle_alcohol.contain..' gorgées')
+                            ShowAboveRadarMessage('~g~il vous reste '..items.bottle_alcohol.contain..' gorgées')
+                            ShowAboveRadarMessage('~b~Vous servez '..pedServerName)
                             isBottleEmpty()
-                            TriggerServerEvent('Serve_Whiskey', pedServerID)
+                            TriggerServerEvent('Serve_Whiskey', pedServerID,playerName)
                         end
                     end
                 end
