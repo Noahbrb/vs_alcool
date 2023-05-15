@@ -59,8 +59,12 @@ function playerActionWithGlass()
                 
                     TaskPlayAnimAdvanced(playerId, 'amb@world_human_drinking@coffee@male@idle_a', 'idle_c', GetEntityCoords(playerId), 0.0, 0.0, GetEntityHeading(playerId), 3.0, 3.0, -1, 50, 0.7, 0, 0)
                     Citizen.Wait(3500)
-                    playerDrinkcount = playerDrinkcount+1
                     items.glass_alcohol.contain = items.glass_alcohol.contain-1
+                    
+                    --Vérif si le joueur est bourré
+                    playerParam.playerDrinkcount = playerParam.playerDrinkcount + 1
+                    isPlayerDrunk()
+                    --
                 end 
             end
 

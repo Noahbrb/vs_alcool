@@ -8,6 +8,11 @@ items = {
     }
 }
 
+playerParam = {
+    playerDrinkcount = 0,
+    isPlayerDrunk = false
+}
+
 function isBottleEmpty()
     if items.bottle_alcohol.contain == 0 then
         ShowAboveRadarMessage('~r~La bouteille est vide')
@@ -28,4 +33,30 @@ function ControlHelp(text)
     SetTextComponentFormat("STRING")
     AddTextComponentString(text)
     DisplayHelpTextFromStringLabel(0, 0, 1, -1)
+end
+
+
+--Ajouter un effet au joueur si il boit plus de 8 fois (avec possibilité de l'enlever)
+function isPlayerDrunk()
+    if playerParam.playerDrinkcount >= 8 and playerParam.isPlayerDrunk == false then
+        SetTimecycleModifier("spectator5")
+        ShakeGameplayCam("DRUNK_SHAKE", 1.0)
+        RequestAnimSet("move_m@drunk@verydrunk")
+        while not HasAnimSetLoaded("move_m@drunk@verydrunk") do
+            Citizen.Wait(1)
+        end
+        SetPedMovementClipset(PlayerPedId(), "move_m@drunk@verydrunk", true)
+
+        playerParam.isPlayerDrunk = true
+    end
+end
+
+function unDrunk()
+    SetTimecycleModifier("default")
+    StopGameplayCamShaking()
+    ResetPedMovementClipset(PlayerPedId())
+    RemoveAnimSet("move_m@drunk@verydrunk")
+
+    playerParam.playerDrinkcount = 0
+    playerParam.isPlayerDrunk = false
 end

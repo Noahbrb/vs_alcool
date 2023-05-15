@@ -6,8 +6,6 @@ local playerId = PlayerPedId()
 local playerHasBottle = false
 local whiskeyBottle = 'prop_whiskey_bottle'
 local hashWhiskeyBottle = GetHashKey(whiskeyBottle)
-local playerDrinkcount = 0 
-isPlayerDrunk = false
 currentBottle = nil
 
 
@@ -64,7 +62,12 @@ function playerActionWithBottle()
                     AttachEntityToEntity(whiskeyBottle_spawn,GetPlayerPed(PlayerId()),GetPedBoneIndex(GetPlayerPed(PlayerId()), 28422),0.01,0.0,-0.1,0.0,0.0,45.0,1,1,0,1,0,1)
                     items.bottle_alcohol.contain = items.bottle_alcohol.contain-1
                     ShowAboveRadarMessage('~g~Il vous reste '..items.bottle_alcohol.contain..' gorgées')
-                    playerDrinkcount = playerDrinkcount+1
+                    
+                    --Vérif si le joueur est bourré
+                    playerParam.playerDrinkcount = playerParam.playerDrinkcount + 1
+                    isPlayerDrunk()
+                    --
+                    
                     isBottleEmpty()
                 end 
             end
@@ -180,7 +183,7 @@ function playerActionWithBottle()
                             ShowAboveRadarMessage('~g~il vous reste '..items.bottle_alcohol.contain..' gorgées')
                             ShowAboveRadarMessage('~b~Vous servez '..pedServerName)
                             isBottleEmpty()
-                            TriggerServerEvent('Serve_Whiskey', pedServerID,playerName)
+                            TriggerServerEvent('Serve_Whiskey', pedServerID)
                         end
                     end
                 end
@@ -191,33 +194,7 @@ function playerActionWithBottle()
     end)
 end
 
---[[
-    Ajouter un effet au joueur si il boit plus de 8 fois (avec possibilité de l'enlever)
-]]
-Citizen.CreateThread(function ()
-    while true do
-        if playerDrinkcount >= 8 and isPlayerDrunk == false then
-            SetTimecycleModifier("spectator5")
-            ShakeGameplayCam("DRUNK_SHAKE", 1.0)
-            RequestAnimSet("move_m@drunk@verydrunk")
-            while not HasAnimSetLoaded("move_m@drunk@verydrunk") do
-                Citizen.Wait(1)
-            end
-            SetPedMovementClipset(PlayerPedId(), "move_m@drunk@verydrunk", true)
-
-            isPlayerDrunk = true
-        end
-        Citizen.Wait(1000)
-    end
-end)
 
 RegisterCommand('undrunk', function ()
-    SetTimecycleModifier("default")
-    SetPedIsDrunk(PlayerPedId(), false)
-    StopGameplayCamShaking()
-    ResetPedMovementClipset(PlayerPedId())
-    RemoveAnimSet("move_m@drunk@verydrunk")
-
-    playerDrinkcount = 0
-    isPlayerDrunk = false
+    unDrunk()
 end, false)
