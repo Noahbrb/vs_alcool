@@ -1,11 +1,18 @@
 __Un script permettant de partager une bouteille d’alcool avec d’autres joueurs.__
 
-- Avoir la possibilité de poser la bouteille au sol
+- Possibilité de poser la bouteille au sol. (k)
 
-- Avoir la possibilité de boire directement à la bouteille
+- Possibilité de jeter la bouteille/verre. (f3)
 
-- Avoir la possibilité de servir d’autres joueurs
+- Possibilité de boire directement à la bouteille. (f1)
 
-- Avoir un verre 🥃 lorsqu’on se fait servir
+- Possibilité de servir d’autres joueurs. (e)
 
-- La bouteille est vide lorsqu’on a consommé 8 verres d’alcool. 
+- Avoir un verre 🥃 lorsqu’on se fait servir.
+
+- La bouteille est vide lorsqu’on a consommé 8 verres d’alcool.
+
+- Le joueur est bourré au bout de 8 gorgées.
+
+- /bottle pour récupérer la bouteille.
+- /undrunk pour reset l'effet bourré.
